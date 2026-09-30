@@ -1,8 +1,13 @@
 import gi
 gi.require_version('Gdk', '4.0')
-gi.require_version('Gly', '2')
-gi.require_version('GlyGtk4', '2')
-from gi.repository import Gdk, Gio, GLib, GObject, Gly, GlyGtk4
+from gi.repository import Gdk, Gio, GLib, GObject
+try:
+    gi.require_version('Gly', '2')
+    gi.require_version('GlyGtk4', '2')
+    from gi.repository import Gly, GlyGtk4
+except (ValueError, ImportError):
+    # glycin only exists on Linux; elsewhere makeTexture falls back to Pillow.
+    Gly = GlyGtk4 = None
 
 import asyncio
 import enum
@@ -183,9 +188,26 @@ class Suwayomi(GObject.Object):
         try:
             return Gdk.Texture.new_from_bytes(gbytes)
         except GLib.Error:
+            if Gly is None:
+                return self.makeTextureWithPillow(raw_bytes)
             loader = Gly.Loader.new_for_bytes(gbytes)
             frame = loader.load().next_frame()
             return GlyGtk4.frame_get_texture(frame)
+
+    def makeTextureWithPillow(self, raw_bytes: bytes) -> Gdk.Texture:
+        """Decode formats GTK can't (WebP, AVIF...) when glycin isn't available."""
+        from io import BytesIO
+        from PIL import Image
+        try:
+            with Image.open(BytesIO(raw_bytes)) as image:
+                rgba = image.convert('RGBA')
+        except Exception as e:
+            # getPaintable only expects GLib.Error from decoding.
+            raise GLib.Error(f"Pillow couldn't decode image: {e}")
+        return Gdk.MemoryTexture.new(
+            rgba.width, rgba.height, Gdk.MemoryFormat.R8G8B8A8,
+            GLib.Bytes.new(rgba.tobytes()), rgba.width * 4,
+        )
 
     def getModel(self, model_id: int | str, item_type: str) -> GObject.Object | None:
         return self.loaded_models.get((item_type, model_id))

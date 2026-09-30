@@ -23,6 +23,9 @@ from .widgets import KaghezWindow, build_shortcuts
 from .widgets.preferences import KaghezPreferences
 from .widgets.setup import SetupWindow
 
+if sys.platform == 'win32':
+    from . import winproc
+
 APPLICATION_ID = 'com.rini.kaghez'
 JAR_NAME = 'Suwayomi-Server.jar'
 LOCAL_URL = 'http://localhost:4567'
@@ -38,8 +41,18 @@ SERVER_JVM_ARGS = (
 )
 
 
+def get_pkgdatadir() -> str:
+    if getattr(sys, 'frozen', False):
+        # PyInstaller keeps our modules inside its archive, so __file__
+        # doesn't point into the installed tree. The data lives where
+        # kaghez.in's frozen branch puts pkgdatadir.
+        return os.path.join(sys._MEIPASS, 'share', 'kaghez')
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 class LocalServer:
     def __init__(self) -> None:
+        # A subprocess.Popen on Windows, see winproc.
         self.proc: Gio.Subprocess | None = None
         self.pump: asyncio.Task | None = None
         self.exited = False
@@ -50,9 +63,19 @@ class LocalServer:
 
     @staticmethod
     def jar_path() -> str | None:
-        pkgdatadir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        path = os.path.join(pkgdatadir, JAR_NAME)
+        path = os.path.join(get_pkgdatadir(), JAR_NAME)
         return path if os.path.isfile(path) else None
+
+    @staticmethod
+    def java_path() -> str | None:
+        """Prefer a JRE shipped next to the jar (the Windows build bundles
+        one); otherwise rely on `java` from PATH, like the Flatpak does."""
+        java_name = 'java.exe' if sys.platform == 'win32' else 'java'
+        # Not named "jre": the server's class scanner (ClassGraph) treats the
+        # parent of a "jre" folder as part of the JDK and skips the jar
+        # sitting next to it, and the server then fails to start.
+        bundled = os.path.join(get_pkgdatadir(), 'java', 'bin', java_name)
+        return bundled if os.path.isfile(bundled) else shutil.which('java')
 
     def start(self) -> bool:
         if self.running:
@@ -63,10 +86,22 @@ class LocalServer:
             print('[server] bundled Suwayomi jar not found')
             return False
 
-        java = shutil.which('java')
+        java = self.java_path()
         if not java:
             print('[server] Java runtime not found in PATH')
             return False
+
+        if sys.platform == 'win32':
+            try:
+                self.proc = winproc.spawn_server(
+                    [java, *SERVER_JVM_ARGS, '-jar', jar],
+                    lambda proc: GLib.idle_add(self._on_win_exit, proc))
+            except OSError as e:
+                print(f'[server] failed to start: {e}')
+                self.proc = None
+                return False
+            self.exited = False
+            return True
 
         launcher = Gio.SubprocessLauncher.new(
             Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE)
@@ -89,6 +124,11 @@ class LocalServer:
 
         proc, self.proc = self.proc, None
         if proc is None or self.exited:
+            self.exited = False
+            return
+
+        if sys.platform == 'win32':
+            winproc.stop_server(proc)
             self.exited = False
             return
 
@@ -117,6 +157,12 @@ class LocalServer:
         if proc is self.proc:
             self.exited = True
 
+    def _on_win_exit(self, proc) -> bool:
+        print(f'[server] exited with status {proc.returncode}')
+        if proc is self.proc:
+            self.exited = True
+        return GLib.SOURCE_REMOVE
+
     @staticmethod
     async def _pump_output(proc: Gio.Subprocess) -> None:
         stream = Gio.DataInputStream.new(proc.get_stdout_pipe())
@@ -133,8 +179,13 @@ class LocalServer:
 class KaghezApplication(Adw.Application):
 
     def __init__(self, version: str) -> None:
+        flags = Gio.ApplicationFlags.DEFAULT_FLAGS
+        if sys.platform == 'win32':
+            # Single-instance mode goes through D-Bus, which Windows
+            # doesn't have without shipping and autolaunching gdbus.exe.
+            flags |= Gio.ApplicationFlags.NON_UNIQUE
         super().__init__(application_id=APPLICATION_ID,
-                         flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
+                         flags=flags,
                          resource_base_path='/com/rini/kaghez')
         self.version = version
         self.settings = Gio.Settings(schema_id=APPLICATION_ID)

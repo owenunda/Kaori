@@ -16,7 +16,7 @@ pkgdatadir = os.path.join(share, 'kaghez')
 # to analyze its DLLs as if they were Python extension dependencies.
 datas = [
     (os.path.join(pkgdatadir, 'kaghez.gresource'), 'share/kaghez'),
-    (os.path.join(pkgdatadir, 'Suwayomi-Server-v2.3.2361.jar'), 'share/kaghez'),
+    (os.path.join(pkgdatadir, 'Suwayomi-Server.jar'), 'share/kaghez'),
     (os.path.join(pkgdatadir, 'schemas'), 'share/kaghez/schemas'),
     (os.path.join(share, 'icons'), 'share/icons'),
 ]

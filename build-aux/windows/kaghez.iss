@@ -4,7 +4,7 @@
 
 #define AppVersion GetEnv("KAGHEZ_VERSION")
 #if AppVersion == ""
-  #define AppVersion "0.8.8"
+  #define AppVersion "0.9.0"
 #endif
 #define BuildDir "..\..\_build-windows"
 

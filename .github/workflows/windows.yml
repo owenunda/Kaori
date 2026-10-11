@@ -47,7 +47,7 @@ jobs:
           $internal = "_build-windows/dist/Kaghez/_internal"
           foreach ($f in @(
               "share/kaghez/kaghez.gresource",
-              "share/kaghez/Suwayomi-Server-v2.3.2361.jar",
+              "share/kaghez/Suwayomi-Server.jar",
               "share/kaghez/schemas/gschemas.compiled",
               "share/kaghez/java/bin/java.exe")) {
             if (-not (Test-Path "$internal/$f")) { throw "missing $f" }
@@ -63,7 +63,7 @@ jobs:
               "-Dsuwayomi.tachidesk.config.server.systemTrayEnabled=false",
               "-Dsuwayomi.tachidesk.config.server.initialOpenInBrowserEnabled=false",
               "-Dsuwayomi.tachidesk.config.server.kcefEnabled=false",
-              "-jar", "`"$((Resolve-Path "$internal/share/kaghez/Suwayomi-Server-v2.3.2361.jar").Path)`"")
+              "-jar", "`"$((Resolve-Path "$internal/share/kaghez/Suwayomi-Server.jar").Path)`"")
           $ready = $false
           for ($i = 0; $i -lt 60 -and -not $ready; $i++) {
             Start-Sleep -Seconds 2
@@ -87,7 +87,7 @@ jobs:
           if (-not (Test-Path $iscc)) {
             choco install innosetup -y --no-progress
           }
-          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME.TrimStart('v') } else { "0.8.8-$($env:GITHUB_SHA.Substring(0,7))" }
+          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME.TrimStart('v') } else { "0.9.0-$($env:GITHUB_SHA.Substring(0,7))" }
           $env:KAGHEZ_VERSION = $version
           & $iscc build-aux\windows\kaghez.iss
           if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }

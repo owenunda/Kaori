@@ -12,7 +12,7 @@
 set -euo pipefail
 
 JRE_URL="https://api.adoptium.net/v3/binary/latest/21/ga/windows/x64/jre/hotspot/normal/eclipse"
-SERVER_JAR="Suwayomi-Server-v2.3.2361.jar"
+SERVER_JAR="Suwayomi-Server-v2.4.2422.jar"
 
 PACKAGES=(
   mingw-w64-ucrt-x86_64-python
@@ -21,6 +21,7 @@ PACKAGES=(
   mingw-w64-ucrt-x86_64-python-httpx
   mingw-w64-ucrt-x86_64-python-aiohttp
   mingw-w64-ucrt-x86_64-python-pillow
+  mingw-w64-ucrt-x86_64-python-babel
   mingw-w64-ucrt-x86_64-gtk4
   mingw-w64-ucrt-x86_64-libadwaita
   mingw-w64-ucrt-x86_64-librsvg

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Builds the Windows version of Kaghez.
+# Builds the Windows version of Kaori.
 #
 # Run from the repository root inside an MSYS2 UCRT64 shell:
 #   bash build-aux/windows/build.sh            # installs deps with pacman first
 #   bash build-aux/windows/build.sh --no-deps  # deps already installed (CI)
 #
-# Result: _build-windows/dist/Kaghez/Kaghez.exe (portable folder). The
+# Result: _build-windows/dist/Kaori/Kaori.exe (portable folder). The
 # installer is made afterwards from build-aux/windows/kaghez.iss with Inno
 # Setup, which runs outside MSYS2.
 
@@ -100,13 +100,13 @@ EOF
 
 echo "==> PyInstaller"
 # PyInstaller names the exe after the script.
-cp "$PREFIX/bin/kaghez" "$OUT/Kaghez.py"
+cp "$PREFIX/bin/kaghez" "$OUT/Kaori.py"
 KAGHEZ_PREFIX="$PREFIX" KAGHEZ_OUT="$OUT" \
   pyinstaller --noconfirm \
     --distpath "$OUT/dist" \
     --workpath "$OUT/pyinstaller" \
     build-aux/windows/kaghez.spec
-cp -r "$PKGDATADIR/java" "$OUT/dist/Kaghez/_internal/share/kaghez/java"
+cp -r "$PKGDATADIR/java" "$OUT/dist/Kaori/_internal/share/kaghez/java"
 
 echo
-echo "Done: $OUT/dist/Kaghez/Kaghez.exe"
+echo "Done: $OUT/dist/Kaori/Kaori.exe"

@@ -44,7 +44,7 @@ jobs:
       - name: Smoke test
         shell: pwsh
         run: |
-          $internal = "_build-windows/dist/Kaghez/_internal"
+          $internal = "_build-windows/dist/Kaori/_internal"
           foreach ($f in @(
               "share/kaghez/kaghez.gresource",
               "share/kaghez/Suwayomi-Server.jar",
@@ -55,7 +55,7 @@ jobs:
           & "$internal/share/kaghez/java/bin/java.exe" -version
 
           # Start the server exactly where the app keeps it and ask it the
-          # same GraphQL query Kaghez uses to decide the server is ready.
+          # same GraphQL query Kaori uses to decide the server is ready.
           $server = Start-Process -PassThru -NoNewWindow `
             -FilePath "$internal/share/kaghez/java/bin/java.exe" `
             -RedirectStandardOutput server.log -RedirectStandardError server-err.log `
@@ -91,11 +91,11 @@ jobs:
           $env:KAGHEZ_VERSION = $version
           & $iscc build-aux\windows\kaghez.iss
           if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }
-          Compress-Archive -Path _build-windows/dist/Kaghez -DestinationPath "_build-windows/installer/Kaghez-$version-portable-x64.zip"
+          Compress-Archive -Path _build-windows/dist/Kaori -DestinationPath "_build-windows/installer/Kaori-$version-portable-x64.zip"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: kaghez-windows
+          name: kaori-windows
           path: _build-windows/installer/*
           compression-level: 0
 

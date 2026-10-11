@@ -24,7 +24,7 @@ if os.path.isdir(os.path.join(share, 'locale')):
     datas.append((os.path.join(share, 'locale'), 'share/locale'))
 
 a = Analysis(
-    [os.path.join(out, 'Kaghez.py')],
+    [os.path.join(out, 'Kaori.py')],
     # kaghez.in imports the app as `from kaghez import main`.
     pathex=[pkgdatadir],
     binaries=[],
@@ -53,7 +53,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='Kaghez',
+    name='Kaori',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -68,5 +68,5 @@ coll = COLLECT(
     a.datas,
     strip=False,
     upx=False,
-    name='Kaghez',
+    name='Kaori',
 )

@@ -32,7 +32,7 @@ To build it yourself, install [MSYS2](https://www.msys2.org/), open the **UCRT64
 bash build-aux/windows/build.sh
 ```
 
-The app ends up in `_build-windows/dist/Kaghez/Kaghez.exe`. Logs go to `%LOCALAPPDATA%\kaghez\kaghez.log`.
+The app ends up in `_build-windows/dist/Kaori/Kaori.exe`. Logs go to `%LOCALAPPDATA%\kaghez\kaghez.log`.
 
 ## Screenshots
 

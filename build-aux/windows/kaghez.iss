@@ -10,18 +10,18 @@
 
 [Setup]
 AppId={{6B0E3C8B-5E2B-4F4B-9C7E-2A1D9E4B7C31}
-AppName=Kaghez
+AppName=Kaori
 AppVersion={#AppVersion}
-AppPublisher=Kaghez
-AppPublisherURL=https://github.com/owenunda/Kaghez_win
-DefaultDirName={autopf}\Kaghez
-DefaultGroupName=Kaghez
+AppPublisher=Kaori
+AppPublisherURL=https://github.com/riyaniii/Kaori
+DefaultDirName={autopf}\Kaori
+DefaultGroupName=Kaori
 DisableProgramGroupPage=yes
 LicenseFile=..\..\COPYING
 OutputDir={#BuildDir}\installer
-OutputBaseFilename=Kaghez-{#AppVersion}-setup-x64
+OutputBaseFilename=Kaori-{#AppVersion}-setup-x64
 SetupIconFile={#BuildDir}\kaghez.ico
-UninstallDisplayIcon={app}\Kaghez.exe
+UninstallDisplayIcon={app}\Kaori.exe
 Compression=lzma2/max
 SolidCompression=yes
 ArchitecturesAllowed=x64compatible
@@ -30,7 +30,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 WizardStyle=modern
-; Kaghez.exe keeps the bundled java.exe alive; make sure both are closed
+; Kaori.exe keeps the bundled java.exe alive; make sure both are closed
 ; before files are replaced.
 CloseApplications=force
 
@@ -44,13 +44,18 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [InstallDelete]
 ; Drop the previous version's bundle so old jars/DLLs don't pile up.
 Type: filesandordirs; Name: "{app}\_internal"
+; Leftovers from before the app was renamed from Kaghez. Same AppId, so
+; upgrades land in the old folder.
+Type: files; Name: "{app}\Kaghez.exe"
+Type: files; Name: "{autoprograms}\Kaghez.lnk"
+Type: files; Name: "{autodesktop}\Kaghez.lnk"
 
 [Files]
-Source: "{#BuildDir}\dist\Kaghez\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#BuildDir}\dist\Kaori\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\Kaghez"; Filename: "{app}\Kaghez.exe"
-Name: "{autodesktop}\Kaghez"; Filename: "{app}\Kaghez.exe"; Tasks: desktopicon
+Name: "{autoprograms}\Kaori"; Filename: "{app}\Kaori.exe"
+Name: "{autodesktop}\Kaori"; Filename: "{app}\Kaori.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\Kaghez.exe"; Description: "{cm:LaunchProgram,Kaghez}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\Kaori.exe"; Description: "{cm:LaunchProgram,Kaori}"; Flags: nowait postinstall skipifsilent

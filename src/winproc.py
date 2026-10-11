@@ -3,8 +3,8 @@
 Gio.Subprocess isn't a good fit on Windows: there is no SIGTERM, and
 spawning java.exe from a GUI app flashes a console window. We use a plain
 Popen with CREATE_NO_WINDOW instead, and put the server in a job object
-with KILL_ON_JOB_CLOSE so Windows kills it when Kaghez exits, even if
-Kaghez crashes or is killed from Task Manager. Otherwise java.exe would
+with KILL_ON_JOB_CLOSE so Windows kills it when Kaori exits, even if
+Kaori crashes or is killed from Task Manager. Otherwise java.exe would
 keep running in the background, holding port 4567.
 """
 
@@ -98,7 +98,7 @@ def spawn_server(argv: list[str], on_exit) -> subprocess.Popen:
             raise ctypes.WinError(ctypes.get_last_error())
     except OSError as e:
         # Not fatal: the server still runs, it just won't be cleaned up if
-        # Kaghez dies without going through stop_server().
+        # Kaori dies without going through stop_server().
         print(f"[suwayomi] couldn't attach server to job object: {e}", flush=True)
 
     threading.Thread(target=pump_output, args=(proc, on_exit), daemon=True).start()

@@ -26,7 +26,7 @@ You can install Kaori as flatpak
 
 #### Windows
 
-Download the installer (`Kaori-<version>-setup-x64.exe`) or the portable zip. Everything is bundled (GTK, a Java 21 runtime and the Suwayomi server), so nothing else needs to be installed.
+Download the installer (`Kaori-<version>-Setup.exe`) or the portable zip. Everything is bundled (GTK, a Java 21 runtime and the Suwayomi server), so nothing else needs to be installed.
 <p>
   <a href="https://github.com/owenunda/Kaori/releases">
     <img src="https://img.shields.io/badge/⬇%20Download%20for%20Windows-GitHub%20Releases-0078D4?style=for-the-badge&logo=windows&logoColor=white" height="60">

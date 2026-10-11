@@ -14,6 +14,9 @@ Kaori allows you to discover, download and read comics with a beautiful looking 
 Kaori connects to/runs [Suwayomi](https://github.com/Suwayomi/Suwayomi-Server) as the backend.
 
 ### Installation
+
+#### Linux
+
 You can install Kaori as flatpak
 <p>
   <a href="https://github.com/riyaniii/Kaori/releases">
@@ -21,18 +24,28 @@ You can install Kaori as flatpak
   </a>
 </p>
 
+#### Windows
 
-### Windows
+Download the installer (`Kaori-<version>-setup-x64.exe`) or the portable zip. Everything is bundled (GTK, a Java 21 runtime and the Suwayomi server), so nothing else needs to be installed.
+<p>
+  <a href="https://github.com/owenunda/Kaori/releases">
+    <img src="https://img.shields.io/badge/⬇%20Download%20for%20Windows-GitHub%20Releases-0078D4?style=for-the-badge&logo=windows&logoColor=white" height="60">
+  </a>
+</p>
 
-Installers and a portable zip are built by the [Windows build workflow](.github/workflows/windows.yml). They bundle GTK, a Java 21 runtime and the Suwayomi server, so nothing else needs to be installed.
+The installer isn't signed, so Windows SmartScreen may warn you the first time: click **More info** → **Run anyway**.
 
-To build it yourself, install [MSYS2](https://www.msys2.org/), open the **UCRT64** shell in the repository (with `git lfs pull` done) and run:
+<details>
+<summary>Building for Windows</summary>
+
+The installer and the portable zip are built by the [Windows build workflow](.github/workflows/windows.yml). To build it yourself, install [MSYS2](https://www.msys2.org/), open the **UCRT64** shell in the repository (with `git lfs pull` done) and run:
 
 ```bash
 bash build-aux/windows/build.sh
 ```
 
 The app ends up in `_build-windows/dist/Kaori/Kaori.exe`. Logs go to `%LOCALAPPDATA%\kaghez\kaghez.log`.
+</details>
 
 ## Screenshots
 
